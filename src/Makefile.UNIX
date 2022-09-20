@@ -1,0 +1,86 @@
+#
+# Makefile for rvr library
+#
+G = -O2
+VFRDIR=../../vfr/dist
+GLEWDIR=/usr
+
+ifeq ("$(shell uname)", "Linux") 
+  OS="Linux"
+endif
+ifeq ("$(shell uname)", "Darwin")
+  OS="MacOSX"
+  GLEWDIR=/usr/local
+  ifeq ("$(shell arch)", "arm64")
+    GLEWDIR=/opt/homebrew
+  endif
+endif
+
+CXX = `wx-config --cxx`
+AR = ar -curv
+RANLIB = ranlib
+RM = rm -f
+INSTALL = install
+
+GLUTINC = 
+GLUTLIB = -lglut
+ifeq ("$(shell uname)", "Darwin")
+  GLUTINC=-framework GLUT
+  GLUTLIB=-framework GLUT -framework OpenGL
+endif
+WXINC = `$(VFRDIR)/config/vfr-config --prefix=$(VFRDIR) --Wx --cflags`
+WXLIB = `$(VFRDIR)/config/vfr-config --prefix=$(VFRDIR) --Wx --ldflags` \
+	`$(VFRDIR)/config/vfr-config --prefix=$(VFRDIR) --Wx --libs`
+
+CFLAGS = $(G) -D_FILE_OFFSET_BITS=64 -DGL_GLEXT_PROTOTYPES
+CXXFLAGS = $(CFLAGS) -I. -I$(VFRDIR)/include -I$(GLEWDIR)/include \
+	$(GLUTINC) $(WXINC)
+LDLIBS = -L$(GLEWDIR)/lib -lGLEW -lGLU -lGL
+LDFLAGS = $(CFLAGS) -pthread
+
+ifeq ($(OS), "MacOSX")
+  CXXFLAGS += -DMACOSX
+  LDFLAGS += -bind_at_load
+  LDLIBS = -L$(GLEWDIR)/lib -lGLEW
+endif
+
+OBJS =	rvrProgramObject.o \
+	rvrShaderObject.o \
+	rvrVolumeRenderer.o \
+	rvrUtils.o
+
+RVRLIB = libRVR.a
+LIBRVR = -L. -lRVR
+
+.cpp.o:
+	$(CXX) -c $(CXXFLAGS) $<
+
+all : $(RVRLIB)
+
+app : TestWx
+ifeq ($(OS), "Linux")
+app : TestGLUT
+endif
+
+$(RVRLIB) : $(OBJS)
+	$(AR) $(RVRLIB) $(OBJS)
+	$(RANLIB) $(RVRLIB)
+
+TestWx : TestWx.o $(RVRLIB)
+	$(CXX) -o $@ TestWx.o $(LIBRVR) $(LDFLAGS) $(WXLIB) $(LDLIBS)
+
+TestGLUT : TestGLUT.o $(RVRLIB)
+	$(CXX) -o $@ TestGLUT.o $(LIBRVR) $(LDFLAGS) $(GLUTLIB) $(LDLIBS)
+
+clean :
+	$(RM) $(OBJS) TestWx.o TestGLUT.o
+
+distclean : clean
+	$(RM) $(RVRLIB) TestWx TestGLUT
+
+install : $(RVRLIB)
+	$(INSTALL) -d ../include
+	$(INSTALL) -m 0644 rvr*.h ../include
+	$(INSTALL) -d ../lib
+	$(INSTALL) -m 0644 $(RVRLIB) ../lib
+	$(RANLIB) ../lib/$(RVRLIB)

@@ -1,0 +1,66 @@
+#
+# MAKEFILE for rvr library
+#
+GLEWDIR = ../../glew-1.9.0
+VFRDIR = ../../vfr/dist
+WXDIR = "C:/wxWidgets-3.0.2"
+
+CFLAGS = /D_WIN32 /DWIN32 /D_WINDOWS /DWINDOWS /DNDEBUG \
+ /DwxUSE_GUI=1 /D__WXMSW__ /D_UNICODE /DUNICODE /W3 /GR \
+ /O1 /FD /EHsc /Gd /Zc:wchar_t /Zc:forScope /WX- /MD \
+ /I$(VFRDIR)/include /I$(GLEWDIR)/include \
+ /I$(WXDIR)/include /I$(WXDIR)/lib/vc_lib/mswu
+
+LDLIBS = /libpath:$(VFRDIR)/lib \
+ /libpath:$(GLEWDIR)/lib \
+ /libpath:$(WXDIR)/lib/vc_lib \
+ vfr.lib vfru.lib vfrWx.lib rvr.lib \
+ "wxmsw30u_gl.lib" "opengl32.lib" "glu32.lib" "wxmsw30u_core.lib" "wxbase30u.lib" \
+ "wxtiff.lib" "wxjpeg.lib" "wxpng.lib" "wxzlib.lib" "wxregexu.lib" "wxexpat.lib" \
+ "kernel32.lib" "user32.lib" "gdi32.lib" "comdlg32.lib" "winspool.lib" "winmm.lib" \
+ "shell32.lib" "comctl32.lib" "ole32.lib" "oleaut32.lib" "uuid.lib" "rpcrt4.lib" \
+ "advapi32.lib" "wsock32.lib" "wininet.lib" "odbc32.lib" "odbccp32.lib" \
+  msvcrt.lib
+
+LDFLAGS = /MANIFEST /ManifestFile:"TestWx.manifest" /ALLOWISOLATION \
+ /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"TestWx.pdb" \
+ /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF \
+ /MACHINE:X86 \
+
+OBJS =	rvrProgramObject.obj \
+	rvrShaderObject.obj \
+	rvrVolumeRenderer.obj \
+	rvrUtils.obj
+
+RES = $(VFRDIR)/lib/vfr.res
+
+TARGET = rvr.lib
+
+CXX = cl -nologo -c
+AR = lib /NOLOGO
+LINK = link
+
+.SUFFIXES: .cpp .obj
+
+.cpp.obj:
+	$(CXX) $(CFLAGS) $<
+
+
+rvr.lib : $(OBJS)
+	$(AR) -out:$@ $** 
+
+TestWx.exe : TestWx.obj rvr.lib
+	$(LINK) $(LDFLAGS) -out:$@ $(RES) $(LDLIBS)
+
+clean : 
+	-@erase *.obj
+
+distclean : clean
+	-@erase $(TARGET) vc*0.*
+
+install : rvr.lib
+	-@md ..\\include
+	-@copy rvr*.h ..\\include
+	-@md ..\\lib
+	-@copy rvr.lib ..\\lib
+
