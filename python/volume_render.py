@@ -13,8 +13,8 @@ varying vec3 p;
 varying vec3 t;
 varying vec3 l;
 void main() {
-  gl_Position = gl_ProjectionMatrix * gl_Vertex;
   gl_ClipVertex = gl_Vertex;
+  gl_Position = gl_ProjectionMatrix * gl_Vertex;
   p = ( gl_ModelViewMatrix * gl_Vertex ).xyz;
   t = ( modelview_matrix_inverse * gl_Vertex ).xyz;
   l = ( modelview_matrix_inverse * gl_LightSource[0].position ).xyz;
@@ -68,7 +68,7 @@ vec4 DensityToColor( float d ) {
   vec3 viewVec = normalize(-p);
   vec3 halfVec = normalize(lightVec + viewVec);
   vec3 halfVec2 = normalize(lightVec2 + viewVec);
-  float shine = 1.0; //gl_FrontMaterial.shinines;
+  float shine = 100.0; //gl_FrontMaterial.shinines;
   float specular = pow(max(dot(N, halfVec), 0.0), shine);
   float specular2 = pow(max(dot(N, halfVec2), 0.0), shine);
   float attenuation = 1.0 / (gl_LightSource[0].constantAttenuation
@@ -122,7 +122,7 @@ class VolumeRender(object):
         self.m_is_draw_frame = is_frame
         self.m_frame_margin_ratio = margin
         self.m_shading = 1
-        self.m_gradmap = 1
+        self.m_gradmap = 0
         self.m_p0 = [0.0, 0.0, 0.0]
         self.m_p1 = [1.0, 1.0, 1.0]
         self.ResetClipPlane()
@@ -384,9 +384,9 @@ class VolumeRender(object):
         iM = M.inverse()
 
         self.m_po.Enable()
-        self.m_po.SetUniform1i("texture_data", 0)
-        self.m_po.SetUniform1i("texture_lut",  1)
-        self.m_po.SetUniform1i("texture_lut2", 2)
+        self.m_po.SetUniform1i("texture_data", 0) # TEXTURE0
+        self.m_po.SetUniform1i("texture_lut",  1) # TEXTURE1
+        self.m_po.SetUniform1i("texture_lut2", 2) # TEXTURE2
         self.m_po.SetUniform1f("thickness", thickness1)
         self.m_po.SetUniform1f("bias", 1.0)
         self.m_po.SetUniform3f("resolution",

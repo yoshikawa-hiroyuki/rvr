@@ -6,6 +6,7 @@ from vfr import scene
 from vfr import light
 from vfr import gfxNode
 from vfr import gfxGroup
+from vfr import primitives
 from vfr import defaultActions
 from vfr import utilMath
 from vfr import lut
@@ -28,13 +29,16 @@ cam.setScene(scn)
 
 li0 = scn.getLight(0)
 li0._lightType = light.LT_POINT
-li0.trans([0.0, 100.0, 0.0])
+li0.trans([5.0, 5.0, 10.0])
 
 rvr_node = rvr.RVR()
 rvr_node.Initialize()
 rvr_node.loadAvsVol('hydrogen.dat')
 rvr_node.SetGeom([-5,-5,-5], [5,5,5])
 scn.addChild(rvr_node)
+
+geo_node = primitives.Ball(radius=3.0)
+scn.addChild(geo_node)
 
 defaultActions.SetDefaultAction(da)
 
