@@ -1,9 +1,9 @@
 #
 # MAKEFILE for rvr library
 #
-GLEWDIR = ../../glew-1.9.0
+GLEWDIR = ../../../GLEW/glew-2.1.0
 VFRDIR = ../../vfr/dist
-WXDIR = "C:/wxWidgets-3.0.4"
+WXDIR = "C:/Users/yoh/Works/wxWidgets-3.0.5"
 
 CFLAGS = /D_WIN64 /DWIN64 /D_WINDOWS /DWINDOWS /DNDEBUG \
  /DwxUSE_GUI=1 /D__WXMSW__ /D_UNICODE /DUNICODE /W3 /GR \
