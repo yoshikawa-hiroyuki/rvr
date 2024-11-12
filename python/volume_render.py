@@ -415,7 +415,7 @@ class VolumeRender(object):
     
 #----------------------------------------------------------------------
 def GetMax3DTexSize(startSz):
-    _MIN_SAMPLE_SZ = 64
+    _MIN_SAMPLE_SZ = 128
 
     maxTex3DSz = glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE)
     if maxTex3DSz < 1: maxTex3DSz = 512
