@@ -37,8 +37,8 @@ rvr_node.loadAvsVol('hydrogen.dat')
 rvr_node.SetGeom([-5,-5,-5], [5,5,5])
 scn.addChild(rvr_node)
 
-geo_node = primitives.Ball(radius=3.0)
-scn.addChild(geo_node)
+#geo_node = primitives.Ball(radius=3.0)
+#scn.addChild(geo_node)
 
 defaultActions.SetDefaultAction(da)
 

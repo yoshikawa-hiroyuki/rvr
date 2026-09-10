@@ -22,7 +22,7 @@ struct rvrLUT {
   unsigned char m_rgba[256][4];
 
   rvrLUT() {
-    register int i;
+    int i;
     for ( i = 0; i < 256; i++ ) {
       //unsigned char r, g, b, a;
       m_rgba[i][0] = (unsigned char)i;

@@ -68,7 +68,7 @@ class RVR(gfxNode.GfxNode):
         if xdSz < 1:
             return False
 
-        data = np.zeros([dimSz], 'uint8')
+        data = np.zeros([xdSz], 'uint8')
         d = dmax - dmin
         if d < 1e-8: d = 1e-8
 
@@ -159,7 +159,7 @@ class RVR(gfxNode.GfxNode):
                                .format(didx))
         self.SetData(data, sph.dims[0], sph.dims[1], sph.dims[2], dmin, dmax)
 
-        gro = [sph.org[0], sph.org[1], sph.org[2]]
+        gro = sph.org
         gro[0] += sph.pitch[0] * (sph.dims[0]-1)
         gro[1] += sph.pitch[1] * (sph.dims[1]-1)
         gro[2] += sph.pitch[2] * (sph.dims[2]-1)

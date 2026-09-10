@@ -1,11 +1,11 @@
 #
 # MAKEFILE for rvr library
 #
-GLEWDIR = ../../../GLEW/glew-2.1.0
+GLEWDIR = $(VISIO_GLEW_TOP)
 VFRDIR = ../../vfr/dist
-WXDIR = "C:/Users/yoh/Works/wxWidgets-3.0.5"
+WXDIR = $(VISIO_WX_TOP)
 
-CFLAGS = /D_WIN64 /DWIN64 /D_WINDOWS /DWINDOWS /DNDEBUG \
+CFLAGS = /D_WIN32 /DWIN32 /D_WIN64 /DWIN64 /D_WINDOWS /DWINDOWS /DNDEBUG \
  /DwxUSE_GUI=1 /D__WXMSW__ /D_UNICODE /DUNICODE /W3 /GR \
  /O1 /FD /EHsc /Gd /Zc:wchar_t /Zc:forScope /WX- /MD \
  /I$(VFRDIR)/include /I$(GLEWDIR)/include \
@@ -38,6 +38,7 @@ TARGET = rvr.lib
 CXX = cl -nologo -c
 AR = lib /NOLOGO
 LINK = link
+INSTALL = copy
 
 .SUFFIXES: .cpp .obj
 
@@ -47,6 +48,10 @@ LINK = link
 
 rvr.lib : $(OBJS)
 	$(AR) -out:$@ $** 
+
+install : $(TARGET)
+	if not exist "..\lib" mkdir "..\lib"
+	$(INSTALL) $(TARGET) ..\lib\
 
 TestWx.exe : TestWx.obj rvr.lib
 	$(LINK) $(LDFLAGS) -out:$@ $(RES) $(LDLIBS)
